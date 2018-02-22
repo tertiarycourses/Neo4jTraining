@@ -1,0 +1,63 @@
+// Neo4j Essential Training
+// Module 3 - Node Properties
+// Author: Dr. Alfred Ang
+
+//Create Node Properties
+CREATE (:Employee {name:"Ally Tan", gender: "F", age:36})
+
+// Create nodes with properties
+CREATE (:Employee {name:"Belinda Ng", gender: "F",age:40})
+CREATE (:Employee {name:"Jane Tan", gender: "F", age:32})
+CREATE (:Employee {name:"Steve Tan", gender: "M", age:40})
+
+// Search by node properties
+MATCH (n {gender : "M"}) RETURN (n)
+MATCH (n) WHERE n.gender="F" RETURN(n)
+
+MATCH (n {gender : "F"}) RETURN (n.name)
+MATCH (n {gender : "F"}) RETURN n.name ORDER BY n.name
+MATCH (n) WHERE n.gender IN ['M','F'] RETURN(n)
+MATCH (n:Employee) WHERE n.name CONTAINS 'Tan' RETURN (n)
+
+// Ex: Search by node properties
+MATCH (n) WHERE n.age> 38 RETURN (n)
+MATCH (n) WHERE n.age> 38 AND n.name="Belinda Ng" RETURN (n)
+
+// Ex: Search by node properties
+CREATE (TheMatrix:Movie {title:'The Matrix', released:1999, tagline:'Welcome to the Real World'})
+CREATE (Keanu:Person {name:'Keanu Reeves', born:1964})
+CREATE (Carrie:Person {name:'Carrie-Anne Moss', born:1967})
+CREATE (Laurence:Person {name:'Laurence Fishburne', born:1961})
+CREATE (Hugo:Person {name:'Hugo Weaving', born:1960})
+CREATE (AndyW:Person {name:'Andy Wachowski', born:1967})
+CREATE (LanaW:Person {name:'Lana Wachowski', born:1965})
+CREATE (JoelS:Person {name:'Joel Silver', born:1952})
+
+MATCH (n:Person) WHERE n.born > 1959 AND (n.name CONTAINS  'Wachowski' OR n.name CONTAINS 'Hugo') RETURN (n)
+
+// Update node properties
+MATCH(n:Employee) WHERE n.name ='Belinda Ng' SET n.name = 'Belinda Tan' RETURN (n) 
+
+// Add new node properties
+MATCH(n:Employee) WHERE n.name ='Belinda Ng' SET n.height = 175 RETURN (n)
+
+// Update multiple node properties
+MATCH(n:Employee) WHERE n.name ='Belinda Tan' SET n.name = 'Belinda Ng',n.age = 30 RETURN (n) 
+MATCH(n:Employee) WHERE n.name ='Belinda Ng' SET n += {age:25,height:165} RETURN (n)
+
+// Ex: Update node properties
+MATCH(n:Person) WHERE n.born = 1967 SET n += {zodiac:'Goat', status:'Married'} RETURN (n)
+
+// Add new node label
+MATCH(n:Employee) WHERE n.name ='Belinda Ng' SET n:GF RETURN (n)
+
+// Ex: Add new label
+MATCH(n:Person) WHERE n.born = 1967 SET n:ACTOR RETURN (n)
+
+// Copy one node to another node
+MATCH (n {name:'Belinda Ng'}),(m {name:'Ally Tan'}) SET m = n RETURN n,m 
+
+// Remove node properties
+MATCH(n:Employee) WHERE n.name ='Belinda Ng' SET n.height = NULL RETURN (n)
+MATCH(n:Employee) REMOVE n.height RETURN (n)
+MATCH (a:Employee) WHERE a.name = "Ally Tan" REMOVE a.name

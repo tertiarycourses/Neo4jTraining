@@ -1,0 +1,35 @@
+// Neo4j Essential Training
+// Module 6 - Analyzing Data
+// Author: Dr. Alfred Ang
+
+//Merge Nodes with Properties
+CREATE (Ally:Employee {name:"Ally Tan", gender: "F", age:36})
+CREATE (Belinda:Employee {name:"Belinda Ng", gender: "F",age:40})
+CREATE (Jane:Employee {name:"Jane Tan", gender: "F", age:32})
+CREATE (Jane)-[:Subordinate]->(Ally) 
+CREATE (Jane)-[:Subordinate]->(Belinda)
+CREATE (Ally)-[:Manager]->(Belinda)
+CREATE (Ally)-[:Manager]->(Jane) 
+
+//Try this
+MERGE (Ally:Employee {name:"Ally Tan", gender: "F", age:36})
+//Then try this
+MERGE (Ally:Employee {name:"Ally Tan", gender: "F", age:37})
+
+//Merge Relationships
+
+MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Belinda Ng" 
+MERGE (a)-[:Manager]->(b) RETURN a,b
+MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Belinda Ng" 
+MERGE (a)-[:Colleague]->(b) RETURN a,b
+
+//Aggregation Functions
+MATCH (n:Employee)  WHERE n.age>2 RETURN COUNT(n)  
+MATCH (n:Employee) RETURN MAX(n.age)
+MATCH (n:Employee) RETURN MIN(n.age)
+MATCH (n:Employee) RETURN SUM(n.age)
+MATCH (n:Employee) RETURN AVG(n.age)
+
+
+
+

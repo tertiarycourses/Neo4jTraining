@@ -1,0 +1,61 @@
+// Neo4j Essential Training
+// Module 2 - Nodes and Labels
+// Author: Dr. Alfred Ang
+
+// Create nodes and labels
+CREATE (:Student)
+CREATE (n:Student)
+CREATE (:Student), (:Student)
+CREATE (:Student:Chinese)
+
+// Ex: Create nodes and labels
+CREATE (:Teacher),(:Teacher),(:Teacher)
+CREATE (:Teacher :ABC_School),(:Teacher :ABC_School)
+
+// View nodes
+MATCH (n) RETURN (n)
+MATCH (n:Student) RETURN (n)
+MATCH (n:Student) RETURN (n) LIMIT 2
+
+// Count all nodes
+MATCH (n) RETURN count(n)
+
+// Search nodes
+MATCH (n) WHERE n:Student RETURN (n)
+MATCH (n:Student) WHERE id(n) = 2  RETURN (n)
+MATCH (n:Student) WHERE id(n) in  [2,5]  RETURN (n)
+MATCH (n) WHERE id(n)<= 8 RETURN (n)
+
+// Delete nodes
+MATCH (n:Student:Indian) DELETE (n)
+MATCH (n) WHERE n:Student:Chinese  DELETE (n)
+MATCH (n:Student) WHERE id(n) in  [2,5]  DELETE (n)
+
+// Ex: Search and delete nodes
+MATCH(n:Teacher) RETURN (n) LIMIT 3
+MATCH (n:Teacher) DELETE (n)
+MATCH (n) WHERE id(n)<= 8 DELETE (n)
+
+// Delete All nodes
+MATCH (n) DELETE (n)
+
+// Add labels to existing nodes
+MATCH (n) SET n:Chinese RETURN (n)
+MATCH (n) SET n:Chinese:Singaporean RETURN (n)
+
+// Ex: Add labels to existing nodes
+CREATE (:Teacher),(:Teacher),(:Teacher)
+MATCH (n) WHERE n:Teacher SET n:ABC_School:JC RETURN (n)
+
+// Remove labels
+MATCH (n) REMOVE n:Chinese RETURN (n)
+
+// Ex: Remove labels
+MATCH (n) WHERE n:JC REMOVE n:JC SET n:Secondary RETURN (n)
+
+// Distinct labels
+Match (n) RETURN DISTINCT labels(n)
+Match (n) WHERE id(n)=32 RETURN DISTINCT labels(n)
+
+// Count labels
+Match (n) RETURN DISTINCT count(labels(n)),labels(n)

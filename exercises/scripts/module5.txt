@@ -1,0 +1,23 @@
+// Neo4j Essential Training
+// Module 5 - Importing Data
+// Author: Dr. Alfred Ang
+
+//Load CSV 
+LOAD CSV WITH HEADERS FROM "file:///employee.csv" AS row
+RETURN row LIMIT 5
+
+//Load CSV and Create Nodes
+LOAD CSV WITH HEADERS FROM "file:///employee.csv" AS row
+CREATE (:Employee {name : row.name, age : toInt(row.age), height : toInt(row.height), race: row.race, salary: toInt(row.salary)})
+
+//Ex: Load CSV and Create Nodes
+LOAD CSV WITH HEADERS FROM "file:///population.csv" AS row
+CREATE (:US {
+county_code: row.County_Code,
+county_name: row.County_Name,
+year: row.Year,
+race_code: row.Race_Code,
+race_name: row.Race_Name,
+gender: row.Gender,
+age: toInt(row.Age),
+population: toInt(row.Population)})

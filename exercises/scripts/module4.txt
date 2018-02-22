@@ -1,0 +1,79 @@
+// Neo4j Essential Training
+// Module 4 - Node Relationships
+// Author: Dr. Alfred Ang
+
+// Create Relationships
+CREATE (Ally:Employee {name:"Ally Tan", gender: "F", age:36})
+CREATE (Belinda:Employee {name:"Belinda Ng", gender: "F",age:40})
+CREATE (Jane:Employee {name:"Jane Tan", gender: "F", age:32})
+CREATE (Jane)-[:Subordinate]->(Ally) 
+CREATE (Jane)-[:Subordinate]->(Belinda)
+CREATE (Ally)-[:Manager]->(Belinda)
+CREATE (Ally)-[:Manager]->(Jane) 
+
+// Ex: Create relationships
+CREATE (Alfred:Employee {name:"Alfred Ang", gender: "M", age:50})
+CREATE (Steve:Employee {name:"Steve Tan", gender: "M", age:40})
+CREATE (Alfred)-[r:Colleague]->(Steve) 
+ 
+// Count all the relationships
+MATCH ()-->() RETURN count(*)
+MATCH (n) OPTIONAL MATCH (n)-[r:Know]-() RETURN n,r
+
+// Count a particular relationships
+MATCH ()-[:Subordinate]->() RETURN count(*)
+
+// Create relationships on existing nodes
+MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Alfred Ang" 
+CREATE (a)-[:Colleague]->(b) 
+
+// Ex: Create relationships on existing nodes
+MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Steve Tan" 
+CREATE (a)-[:Colleague]->(b)
+MATCH (a:Employee), (b:Employee) WHERE a.name = "Jane Tan" AND b.name = "Alfred Ang" 
+CREATE (a)-[:Colleague]->(b)  
+
+// Create relationships with properties and labels
+MATCH (a:player), (b:Country) WHERE a.name = "Shikar Dhawan" AND b.name = "India" 
+CREATE (a)-[r:BATSMAN_OF {Matches:5, Avg:90.75}]->(b)  
+RETURN a,b 
+
+// Create relationship Properties
+CREATE (Alan:Employee {name:"Alan Ong", gender: "M", age:55})
+CREATE (Ranbir:Employee {name:"Ranbir Singh", gender: "M", age:50})
+CREATE (Alan)-[:Colleague {since:2010}]->(Ranbir) 
+
+// Ex: Create relationship Properties
+MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Alfred Ang" 
+CREATE (a)-[:Colleague {since:2008}]->(b)
+
+// Finding Pattern in the Graph
+MATCH (a:Employee)-[:Colleauge]-(friends)
+WHERE a.name = "Ally Tan"
+RETURN a, friends
+
+//Optional Match
+MATCH (a:Employee)
+OPTIONAL MATCH (a:Employee)-[:Colleauge]-(friends)
+WHERE a.name = "Ally Tan"
+RETURN a, friends
+
+//Recommend
+MATCH (a:Employee)-[:Colleague]-()-[:Colleague]-(friends)
+WHERE a.name = "Ally Tan"
+RETURN DISTINCT friends
+
+// Create a path
+MATCH p = (a)-[:Colleauge]->(b)-[:Colleague]->(c)
+WHERE a.name = "Ally Tan"
+FOREACH (n in nodes(p) | SET n.marked=TRUE)
+
+// Show existing paths
+MATCH (a)-->(b) RETURN a,b
+MATCH (a)-->(b)-->(c) RETURN a,b,c
+
+// Delete a particular relationship
+MATCH ()-[r:Subordinate]-() DELETE r
+
+// Delete all relationships
+MATCH ()-[r]-() DELETE r
