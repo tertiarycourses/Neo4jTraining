@@ -7,6 +7,8 @@ The course outline can be found in
 
 https://www.tertiarycourses.com.sg/neo4j-graph-database-essential-training.html
 
+https://www.tertiarycourses.com.my/neo4j-graph-database-training-malaysia.html
+
 <p><strong>Module 1: Get Started on Neo4j</strong></p>
 <ul>
 <li>What is Neo4j</li>
