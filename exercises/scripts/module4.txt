@@ -15,6 +15,10 @@ CREATE (Ally)-[:Manager]->(Jane)
 CREATE (Alfred:Employee {name:"Alfred Ang", gender: "M", age:50})
 CREATE (Steve:Employee {name:"Steve Tan", gender: "M", age:40})
 CREATE (Alfred)-[r:Colleague]->(Steve) 
+
+// Create relationships 
+MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Alfred Ang" 
+CREATE (a)-[:Colleague]->(b)
  
 // Count all the relationships
 MATCH ()-->() RETURN count(*)
@@ -24,14 +28,27 @@ MATCH (n) OPTIONAL MATCH (n)-[r:Know]-() RETURN n,r
 MATCH ()-[:Subordinate]->() RETURN count(*)
 
 // Create relationships on existing nodes
-MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Alfred Ang" 
-CREATE (a)-[:Colleague]->(b) 
-
-// Ex: Create relationships on existing nodes
 MATCH (a:Employee), (b:Employee) WHERE a.name = "Ally Tan" AND b.name = "Steve Tan" 
 CREATE (a)-[:Colleague]->(b)
+
+// Ex: Create relationships on existing nodes
 MATCH (a:Employee), (b:Employee) WHERE a.name = "Jane Tan" AND b.name = "Alfred Ang" 
 CREATE (a)-[:Colleague]->(b)  
+
+// Find exising relationships 
+MATCH (a:Employee {name:"Alan Tan"})-[r]-(b:Employee {name:"Ranbir Singh"}) RETURN r
+
+// Update exising relationship properties - bidirectional
+MATCH (a:Employee {name:"Alan Tan"})-[r]-(b:Employee {name:"Ranbir Singh"}) 
+SET r.since = 2012 RETURN r
+
+// Update exising relationship properties - unidirectional
+MATCH (a:Employee {name:"Alan Tan"})-[r]-(b:Employee {name:"Ranbir Singh"}) 
+SET r.since = 2012 RETURN r
+
+// Update exising relationship properties
+MATCH (a:Employee {name:"Ally Tan"})-[r]-(b:Employee {name:"Alfred Ang"}) 
+SET r.since = 2008 RETURN r
 
 // Create relationships with properties and labels
 MATCH (a:player), (b:Country) WHERE a.name = "Shikar Dhawan" AND b.name = "India" 
@@ -52,6 +69,16 @@ MATCH (a:Employee)-[:Colleauge]-(friends)
 WHERE a.name = "Ally Tan"
 RETURN a, friends
 
+// Ex: Finding Pattern in the Graph
+MATCH (a:Employee)-[:Colleague]-(b)
+WHERE a.name = "Alfred Ang"
+RETURN a,b
+
+// Ex2: Finding Pattern in the Graph
+MATCH (a:Employee)-[r:Colleague]-(b)
+WHERE a.name = "Alfred Ang" AND r.since >= 2010
+RETURN a,b
+
 //Optional Match
 MATCH (a:Employee)
 OPTIONAL MATCH (a:Employee)-[:Colleauge]-(friends)
@@ -64,9 +91,14 @@ WHERE a.name = "Ally Tan"
 RETURN DISTINCT friends
 
 // Create a path
-MATCH p = (a)-[:Colleauge]->(b)-[:Colleague]->(c)
+MATCH p = (a:Employee)-[:Colleague]-()-[:Colleague]-(b)
 WHERE a.name = "Ally Tan"
-FOREACH (n in nodes(p) | SET n.marked=TRUE)
+FOREACH (n in nodes(p) | SET n.marked = TRUE)
+
+// Ex: Create a path
+MATCH p = (a:Employee)-[:Colleague]-()-[:Colleague]-(b)
+WHERE a.name = "Steve Tan"
+FOREACH (n in nodes(p) | SET n.home = "hdb")
 
 // Show existing paths
 MATCH (a)-->(b) RETURN a,b
@@ -77,3 +109,4 @@ MATCH ()-[r:Subordinate]-() DELETE r
 
 // Delete all relationships
 MATCH ()-[r]-() DELETE r
+MATCH (n) DETACH DELETE n
